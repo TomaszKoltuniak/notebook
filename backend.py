@@ -9,7 +9,8 @@ class AllNotes:
     def import_data(self):
         with connect(self.path) as connection:
             cursor = connection.cursor()
-            cursor.execute('SELECT `priority`, `text`, `category`, `creation_date`, `deadline`, `colour`')
+            cursor.execute('SELECT `priority`, `text`, `category`, `creation_date`, `deadline`, `colour` FROM notes')
+            return cursor.fetchall()
 # CREATE TABLE `notes` (
 #   `id` int(11) NOT NULL,
 #   `priority` int(11) NOT NULL,
