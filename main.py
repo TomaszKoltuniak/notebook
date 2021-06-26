@@ -7,7 +7,7 @@ class Application:
     def main():
         root = Tk()
         root.title('Notebook')
-        root.geometry('790x720')
+        root.geometry('800x900')
         MainWindow(root)
         root.mainloop()
 
