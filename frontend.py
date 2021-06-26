@@ -1,9 +1,11 @@
 from tkinter import Tk, Label, Button, Entry, Frame, LabelFrame
+from backend import AllNotes
 
 
 class MainWindow:
     def __init__(self, root: Tk):
         self.root = root
+        self.all_notes = AllNotes()
 
         # A Add new note bar
         self.a_new_note_frame = LabelFrame(self.root, text='Add new note')
@@ -27,7 +29,7 @@ class MainWindow:
         self.a_deadline_frame = LabelFrame(self.a_new_note_frame, text='Deadline')
         self.a_deadline_frame.grid(row=0, column=3)
         self.a_deadline_entry = Entry(self.a_deadline_frame)
-        self.a_deadline_entry.insert(0, 'YYYY.MM.DD HH:MM')
+        self.a_deadline_entry.insert(0, 'YYYY.MM.DD')
         self.a_deadline_entry.pack()
 
         self.a_colour_frame = LabelFrame(self.a_new_note_frame, text='Colour')
@@ -64,5 +66,60 @@ class MainWindow:
         self.s_colour_button.grid(row=0, column=5)
 
         # All notes bar
-        self.notes_frame = LabelFrame(self.root, text='All notes')
+        self.notes_frame = Frame(self.root)
         self.notes_frame.grid(row=2, column=0)
+        temp_note = Note(self.notes_frame, 3, 22, 'Clean the room', 'Cleaning', '2021.06.20', '2021.06.29', 'red')
+        temp_note.start()
+
+
+class Note:
+    COLOURS_BG_FG = {
+        'red': 'white',
+        'blue': 'white',
+        'lime': 'black',
+        'yellow': 'black'
+    }
+
+    def __init__(self, notes_frame: Frame, primary_key: int, priority: int, text: str, category: str,
+                 creation_date: str, deadline: str, colour: str):
+        self.notes_frame = notes_frame
+        self.primary_key = primary_key
+        self.priority = priority
+        self.text = text
+        self.category = category
+        self.creation_date = creation_date
+        self.deadline = deadline
+        self.colour = colour
+
+        self.my_frame = None
+        self.priority_label = None
+        self.text_label = None
+        self.category_label = None
+        self.creation_date_label = None
+        self.deadline_label = None
+        self.delete_button = None
+
+    def start(self):
+        self.my_frame = Frame(self.notes_frame, bg=self.COLOURS_BG_FG[self.colour])
+        self.my_frame.pack()
+
+        self.priority_label = Label(self.my_frame, text=self.priority, width=10)
+        self.priority_label.grid(row=0, column=0)
+
+        self.text_label = Label(self.my_frame, text=self.text, width=50)
+        self.text_label.grid(row=0, column=1)
+
+        self.category_label = Label(self.my_frame, text=self.category, width=10)
+        self.category_label.grid(row=0, column=2)
+
+        self.creation_date_label = Label(self.my_frame, text=self.creation_date, width=10)
+        self.creation_date_label.grid(row=0, column=3)
+
+        self.deadline_label = Label(self.my_frame, text=self.deadline, width=10)
+        self.deadline_label.grid(row=0, column=4)
+
+        self.delete_button = Button(self.my_frame, text='Delete', width=10)
+        self.delete_button.grid(row=0, column=5)
+
+    def end(self):
+        self.my_frame.destroy()
