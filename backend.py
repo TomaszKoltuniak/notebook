@@ -27,6 +27,7 @@ class AllNotes:
                                '`creation_date` DATETIME,'
                                '`deadline` DATETIME,'
                                '`colour` TEXT)')
+                connection.commit()
                 return self.select_data()
 
     def insert_data(self, priority: int, text: str, category: str, deadline: str, colour: str):
@@ -36,5 +37,12 @@ class AllNotes:
             cursor.execute(
                 'INSERT INTO `notes` (`priority`, `text`, `category`, `creation_date`, `deadline`, `colour`)'
                 'VALUES (?, ?, ?, ?, ?, ?)', (priority, text, category, creation_date, deadline, colour))
+            connection.commit()
+        self.select_data()
+
+    def delete_data(self, primary_key: int):
+        with connect(self.path) as connection:
+            cursor = connection.cursor()
+            cursor.execute('DELETE FROM `notes` WHERE `id` = (?)', primary_key)
             connection.commit()
         self.select_data()

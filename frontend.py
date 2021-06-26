@@ -68,7 +68,8 @@ class MainWindow:
         # All notes bar
         self.notes_frame = Frame(self.root)
         self.notes_frame.grid(row=2, column=0)
-        temp_note = Note(self.notes_frame, 3, 22, 'Clean the room', 'Cleaning', '2021.06.20', '2021.06.29', 'red')
+        temp_note = Note(self.notes_frame, self.all_notes, 3, 22, 'Clean the room', 'Cleaning', '2021.06.20',
+                         '2021.06.29', 'lime')
         temp_note.start()
 
 
@@ -80,9 +81,11 @@ class Note:
         'yellow': 'black'
     }
 
-    def __init__(self, notes_frame: Frame, primary_key: int, priority: int, text: str, category: str,
+    def __init__(self, notes_frame: Frame, all_notes: AllNotes, primary_key: int, priority: int, text: str,
+                 category: str,
                  creation_date: str, deadline: str, colour: str):
         self.notes_frame = notes_frame
+        self.all_notes = all_notes
         self.primary_key = primary_key
         self.priority = priority
         self.text = text
@@ -103,23 +106,30 @@ class Note:
         self.my_frame = Frame(self.notes_frame, bg=self.COLOURS_BG_FG[self.colour])
         self.my_frame.pack()
 
-        self.priority_label = Label(self.my_frame, text=self.priority, width=10)
+        self.priority_label = Label(self.my_frame, text=self.priority, width=5, bg=self.colour,
+                                    fg=self.COLOURS_BG_FG[self.colour])
         self.priority_label.grid(row=0, column=0)
 
-        self.text_label = Label(self.my_frame, text=self.text, width=50)
+        self.text_label = Label(self.my_frame, text=self.text, width=58, bg=self.colour,
+                                fg=self.COLOURS_BG_FG[self.colour])
         self.text_label.grid(row=0, column=1)
 
-        self.category_label = Label(self.my_frame, text=self.category, width=10)
+        self.category_label = Label(self.my_frame, text=self.category, width=20, bg=self.colour,
+                                    fg=self.COLOURS_BG_FG[self.colour])
         self.category_label.grid(row=0, column=2)
 
-        self.creation_date_label = Label(self.my_frame, text=self.creation_date, width=10)
+        self.creation_date_label = Label(self.my_frame, text=self.creation_date, width=10, bg=self.colour,
+                                         fg=self.COLOURS_BG_FG[self.colour])
         self.creation_date_label.grid(row=0, column=3)
 
-        self.deadline_label = Label(self.my_frame, text=self.deadline, width=10)
+        self.deadline_label = Label(self.my_frame, text=self.deadline, width=10, bg=self.colour,
+                                    fg=self.COLOURS_BG_FG[self.colour])
         self.deadline_label.grid(row=0, column=4)
 
-        self.delete_button = Button(self.my_frame, text='Delete', width=10)
+        self.delete_button = Button(self.my_frame, text='Delete', width=5, bg=self.colour,
+                                    fg=self.COLOURS_BG_FG[self.colour])
         self.delete_button.grid(row=0, column=5)
 
     def end(self):
+        self.all_notes.delete_data(self.primary_key)
         self.my_frame.destroy()
