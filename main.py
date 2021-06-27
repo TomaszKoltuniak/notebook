@@ -8,6 +8,7 @@ class Application:
         root = Tk()
         root.title('Notebook')
         root.geometry('800x900')
+        root.resizable(False, False)
         MainWindow(root)
         root.mainloop()
 
