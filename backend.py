@@ -3,9 +3,20 @@ from datetime import datetime
 
 
 class AllNotes:
+    SORT_CRITERION = {
+        'id': 0,
+        'priority': 1,
+        'text': 2,
+        'category': 3,
+        'creation_date': 4,
+        'deadline': 5,
+        'colour': 6,
+    }
+
     def __init__(self):
         self.path = 'database.db'
         self.all_notes = []
+        self.sort_reverse_status = True
 
     def select_data(self):
         try:
@@ -46,3 +57,10 @@ class AllNotes:
             cursor.execute('DELETE FROM `notes` WHERE `id` = (?)', (primary_key,))
             connection.commit()
         self.select_data()
+
+    def sort_by(self, sort_criterion: str):
+        print(self.all_notes)
+        self.all_notes = sorted(self.all_notes, key=lambda element: element[self.SORT_CRITERION[sort_criterion]],
+                                reverse=self.sort_reverse_status)
+        print(self.all_notes)
+        self.sort_reverse_status = not self.sort_reverse_status
