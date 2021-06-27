@@ -7,6 +7,10 @@ class MainWindow:
         self.root = root
         self.all_notes = AllNotes()
 
+        # All notes bar
+        self.all_notes_frame = Frame(self.root)
+        self.all_notes_frame.grid(row=2, column=0)
+
         # A Add new note bar
         self.a_new_note_frame = LabelFrame(self.root, text='Add new note')
         self.a_new_note_frame.grid(row=0, column=0)
@@ -34,10 +38,14 @@ class MainWindow:
 
         self.a_colour_frame = LabelFrame(self.a_new_note_frame, text='Colour')
         self.a_colour_frame.grid(row=0, column=4)
-        self.a_add_red = Button(self.a_colour_frame, text='Create', bg='red', fg='white')
-        self.a_add_blue = Button(self.a_colour_frame, text='Create', bg='blue', fg='white')
-        self.a_add_lime = Button(self.a_colour_frame, text='Create', bg='lime', fg='black')
-        self.a_add_yellow = Button(self.a_colour_frame, text='Create', bg='yellow', fg='black')
+        self.a_add_red = Button(self.a_colour_frame, text='Create', bg='red', fg='white',
+                                command=lambda: self.create_new_note('red'))
+        self.a_add_blue = Button(self.a_colour_frame, text='Create', bg='blue', fg='white',
+                                 command=lambda: self.create_new_note('blue'))
+        self.a_add_lime = Button(self.a_colour_frame, text='Create', bg='lime', fg='black',
+                                 command=lambda: self.create_new_note('lime'))
+        self.a_add_yellow = Button(self.a_colour_frame, text='Create', bg='yellow', fg='black',
+                                   command=lambda: self.create_new_note('yellow'))
         self.a_add_red.grid(row=0, column=0)
         self.a_add_blue.grid(row=0, column=1)
         self.a_add_lime.grid(row=0, column=2)
@@ -47,7 +55,8 @@ class MainWindow:
         self.s_sort_frame = LabelFrame(self.root, text='Sort by')
         self.s_sort_frame.grid(row=1, column=0)
 
-        self.s_priority_button = Button(self.s_sort_frame, text='Priority', width=17)
+        self.s_priority_button = Button(self.s_sort_frame, text='Priority', width=17,
+                                        command=lambda: self.deprint_all_notes())
         self.s_priority_button.grid(row=0, column=0)
 
         self.s_text_button = Button(self.s_sort_frame, text='Text', width=19)
@@ -65,12 +74,24 @@ class MainWindow:
         self.s_colour_button = Button(self.s_sort_frame, text='Colour', width=17)
         self.s_colour_button.grid(row=0, column=5)
 
-        # All notes bar
-        self.notes_frame = Frame(self.root)
-        self.notes_frame.grid(row=2, column=0)
-        temp_note = Note(self.notes_frame, self.all_notes, 3, 22, 'Clean the room', 'Cleaning', '2021.06.20',
-                         '2021.06.29', 'lime')
-        temp_note.start()
+        self.print_all_notes()
+
+    def print_all_notes(self):
+        self.all_notes_frame = Frame(self.root)
+        self.all_notes_frame.grid(row=2, column=0)
+        for primary_key, priority, text, category, creation_date, deadline, colour in self.all_notes.select_data():
+            Note(self.all_notes, self.all_notes_frame, priority, text, category, deadline, colour, primary_key,
+                 creation_date)
+
+    def deprint_all_notes(self):
+        self.all_notes_frame.destroy()
+
+    def create_new_note(self, colour: str):
+        self.all_notes.insert_data(self.a_priority_entry.get(), self.a_text_entry.get(), self.a_category_entry.get(),
+                                   self.a_deadline_entry.get(), colour)
+        print(self.all_notes.all_notes)
+        self.deprint_all_notes()
+        self.print_all_notes()
 
 
 class Note:
@@ -81,11 +102,10 @@ class Note:
         'yellow': 'black'
     }
 
-    def __init__(self, notes_frame: Frame, all_notes: AllNotes, primary_key: int, priority: int, text: str,
-                 category: str,
-                 creation_date: str, deadline: str, colour: str):
-        self.notes_frame = notes_frame
+    def __init__(self, all_notes: AllNotes, all_notes_frame: Frame, priority: int, text: str, category: str,
+                 deadline: str, colour: str, primary_key: int = None, creation_date: str = None):
         self.all_notes = all_notes
+        self.all_notes_frame = all_notes_frame
         self.primary_key = primary_key
         self.priority = priority
         self.text = text
@@ -93,6 +113,8 @@ class Note:
         self.creation_date = creation_date
         self.deadline = deadline
         self.colour = colour
+        print(f'Note created {self.primary_key, self.priority, self.text, self.category, self.creation_date}'
+              f'{self.deadline, self.colour}')
 
         self.my_frame = None
         self.priority_label = None
@@ -102,8 +124,10 @@ class Note:
         self.deadline_label = None
         self.delete_button = None
 
+        self.start()
+
     def start(self):
-        self.my_frame = Frame(self.notes_frame, bg=self.COLOURS_BG_FG[self.colour])
+        self.my_frame = Frame(self.all_notes_frame)
         self.my_frame.pack()
 
         self.priority_label = Label(self.my_frame, text=self.priority, width=5, bg=self.colour,
@@ -127,9 +151,9 @@ class Note:
         self.deadline_label.grid(row=0, column=4)
 
         self.delete_button = Button(self.my_frame, text='Delete', width=5, bg=self.colour,
-                                    fg=self.COLOURS_BG_FG[self.colour])
+                                    fg=self.COLOURS_BG_FG[self.colour], command=lambda: self.delete())
         self.delete_button.grid(row=0, column=5)
 
-    def end(self):
-        self.all_notes.delete_data(self.primary_key)
+    def delete(self):
         self.my_frame.destroy()
+        self.all_notes.delete_data(self.primary_key)
