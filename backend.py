@@ -59,8 +59,6 @@ class AllNotes:
         self.select_data()
 
     def sort_by(self, sort_criterion: str):
-        print(self.all_notes)
         self.all_notes = sorted(self.all_notes, key=lambda element: element[self.SORT_CRITERION[sort_criterion]],
                                 reverse=self.sort_reverse_status)
-        print(self.all_notes)
         self.sort_reverse_status = not self.sort_reverse_status
