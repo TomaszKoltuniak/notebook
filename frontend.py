@@ -103,7 +103,6 @@ class MainWindow:
     def create_new_note(self, colour: str):
         self.all_notes.insert_data(self.a_priority_entry.get(), self.a_text_entry.get(), self.a_category_entry.get(),
                                    self.a_deadline_entry.get(), colour)
-        print(self.all_notes.all_notes)
         self.deprint_all_notes()
         self.print_all_notes()
 
@@ -127,8 +126,6 @@ class Note:
         self.creation_date = creation_date
         self.deadline = deadline
         self.colour = colour
-        print(f'Note created {self.primary_key, self.priority, self.text, self.category, self.creation_date}'
-              f'{self.deadline, self.colour}')
 
         self.my_frame = None
         self.priority_label = None
